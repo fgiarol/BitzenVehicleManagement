@@ -40,8 +40,12 @@ namespace BitzenVehicleManagementAPI
                 .AddEntityFrameworkStores<BitzenApplicationContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<IVehicleRepository, VehicleRepository>();
+            services.AddScoped<VehicleService>();
+
             services.AddScoped<IFuelingRepository, FuelingRepository>();
             services.AddScoped<FuelingService>();
+
             services.AddControllers();
         }
 
