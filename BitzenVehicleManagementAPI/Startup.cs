@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BitzenVehicleManagementAPI.Data;
+using BitzenVehicleManagementAPI.Data.Repositories;
 using BitzenVehicleManagementAPI.Models;
+using BitzenVehicleManagementAPI.Models.Repositories;
+using BitzenVehicleManagementAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,6 +40,8 @@ namespace BitzenVehicleManagementAPI
                 .AddEntityFrameworkStores<BitzenApplicationContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<IFuelingRepository, FuelingRepository>();
+            services.AddScoped<FuelingService>();
             services.AddControllers();
         }
 
