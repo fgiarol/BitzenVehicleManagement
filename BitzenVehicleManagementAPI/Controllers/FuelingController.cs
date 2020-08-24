@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using BitzenVehicleManagementAPI.DTOs;
+using BitzenVehicleManagementAPI.Extensions;
 using BitzenVehicleManagementAPI.Models;
-using BitzenVehicleManagementAPI.Models.Repositories;
-using BitzenVehicleManagementAPI.Services;
+using BitzenVehicleManagementAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,48 +15,139 @@ namespace BitzenVehicleManagementAPI.Controllers
     [ApiController]
     public class FuelingController : ControllerBase
     {
-        private readonly FuelingService _fuelingService;
+        private readonly IFuelingService _fuelingService;
+        private readonly IUser _user;
 
-        public FuelingController(FuelingService fuelingService)
+        public FuelingController(IFuelingService fuelingService, IUser user)
         {
             _fuelingService = fuelingService;
+            _user = user;
         }
 
-        // GET: api/<FuelingController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [Authorize]
+        [HttpGet("GetAll")]
+        public ActionResult<List<Fueling>> GetAll()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                return Ok(_fuelingService.GetAll());
+            }
+
+            catch (ArgumentException ex)
+            {
+                return NotFound("Invalid data: " + ex.Message);
+            }
+
+            catch (Exception e)
+            {
+                return BadRequest("An error occured: " + e.Message);
+            }
         }
 
-        // GET api/<FuelingController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [Authorize]
+        [HttpGet("GetById/{fuelingId}")]
+        public ActionResult<Fueling> GetById(long fuelingId)
         {
-            return "value";
+            try
+            {
+                return Ok(_fuelingService.Get(fuelingId));
+            }
+
+            catch (ArgumentException ex)
+            {
+                return NotFound("Invalid data: " + ex.Message);
+            }
+
+            catch (Exception e)
+            {
+                return BadRequest("An error occured: " + e.Message);
+            }
         }
 
-        // POST api/<FuelingController>
-        [HttpPost]
-        public IActionResult Post([FromBody] Fueling fueling)
+        [Authorize]
+        [HttpPost("Create")]
+        public ActionResult<Fueling> Create([FromBody] FuelingDto fuelingDto)
         {
-            //fueling.UserId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            fueling.UserId = 2;
-            _fuelingService.Create(fueling);
+            try
+            {
+                var userId = _user.GetUserId();
 
-            return Ok(fueling);
+                var fueling = new Fueling
+                {
+                    FuelingDateTime = fuelingDto.FuelingDateTime,
+                    FuelingMileage = fuelingDto.FuelingMileage,
+                    FuelStation = fuelingDto.FuelStation,
+                    Liters = fuelingDto.Liters,
+                    Value = fuelingDto.Value,
+                    FuelType = fuelingDto.FuelType,
+                    VehicleId = fuelingDto.VehicleId,
+                    UserId = userId
+                };
+
+                var result = _fuelingService.Create(fueling);
+                return Ok(result);
+            }
+
+            catch (ArgumentException ex)
+            {
+                return NotFound("Invalid data: " + ex.Message);
+            }
+
+            catch (Exception e)
+            {
+                return BadRequest("An error occured: " + e.Message);
+            }
         }
 
-        // PUT api/<FuelingController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Authorize]
+        [HttpPut("Update/{fuelingId}")]
+        public ActionResult<Fueling> Update(int fuelingId, [FromBody] FuelingDto fuelingDto)
         {
+            try
+            {
+                var fueling = _fuelingService.Get(fuelingId);
+                fueling.FuelingDateTime = fuelingDto.FuelingDateTime;
+                fueling.FuelingMileage = fuelingDto.FuelingMileage;
+                fueling.FuelStation = fuelingDto.FuelStation;
+                fueling.FuelType = fuelingDto.FuelType;
+                fueling.Liters = fuelingDto.Liters;
+                fueling.Value = fuelingDto.Value;
+                fueling.VehicleId = fuelingDto.VehicleId;
+
+                return Ok(_fuelingService.Update(fueling));
+            }
+
+            catch (ArgumentException ex)
+            {
+                return NotFound("Invalid data: " + ex.Message);
+            }
+
+            catch (Exception e)
+            {
+                return BadRequest("An error occured: " + e.Message);
+            }
         }
 
-        // DELETE api/<FuelingController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [Authorize]
+        [HttpDelete("Delete/{fuelingId}")]
+        public ActionResult Delete(int fuelingId)
         {
+            try
+            {
+                _fuelingService.Delete(fuelingId);
+                return Ok($"fuelingId: {fuelingId} - deleted");
+            }
+
+            catch (ArgumentException ex)
+            {
+                return NotFound("Invalid data: " + ex.Message);
+            }
+
+            catch (Exception e)
+            {
+                return BadRequest("An error occured: " + e.Message);
+            }
         }
     }
 }
+

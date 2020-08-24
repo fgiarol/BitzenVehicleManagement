@@ -1,5 +1,4 @@
 ﻿using BitzenVehicleManagementAPI.Models.Enums;
-using Microsoft.AspNetCore.Identity;
 
 namespace BitzenVehicleManagementAPI.Models
 {

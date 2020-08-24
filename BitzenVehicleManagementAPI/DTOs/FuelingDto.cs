@@ -1,20 +1,16 @@
 ﻿using BitzenVehicleManagementAPI.Models.Enums;
 using System;
 
-namespace BitzenVehicleManagementAPI.Models
+namespace BitzenVehicleManagementAPI.DTOs
 {
-    public class Fueling
+    public class FuelingDto
     {
-        public long FuelingId { get; set; }
         public decimal FuelingMileage { get; set; }
-        public decimal Value { get; set; }
         public decimal Liters { get; set; }
+        public decimal Value { get; set; }
         public DateTime FuelingDateTime { get; set; }
         public string FuelStation { get; set; }
-        public User User { get; set; }
         public FuelType FuelType { get; set; }
-        public Vehicle Vehicle { get; set; }
         public long VehicleId { get; set; }
-        public long UserId { get; set; }
     }
 }

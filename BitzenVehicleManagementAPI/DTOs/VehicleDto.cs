@@ -1,9 +1,4 @@
-﻿using BitzenVehicleManagementAPI.Models;
-using BitzenVehicleManagementAPI.Models.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BitzenVehicleManagementAPI.Models.Enums;
 
 namespace BitzenVehicleManagementAPI.DTOs
 {
@@ -17,6 +12,5 @@ namespace BitzenVehicleManagementAPI.DTOs
         public FuelType FuelType { get; set; }
         public decimal Mileage { get; set; }
         public string Picture { get; set; }
-        public long UserId { get; set; }
     }
 }
