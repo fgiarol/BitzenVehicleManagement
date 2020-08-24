@@ -1,22 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BitzenVehicleManagementAPI.Data;
 using BitzenVehicleManagementAPI.Data.Repositories;
+using BitzenVehicleManagementAPI.Extensions;
 using BitzenVehicleManagementAPI.Models;
 using BitzenVehicleManagementAPI.Models.Repositories;
 using BitzenVehicleManagementAPI.Services;
+using BitzenVehicleManagementAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
 
 namespace BitzenVehicleManagementAPI
 {
@@ -37,8 +37,33 @@ namespace BitzenVehicleManagementAPI
                         builder.MigrationsAssembly("BitzenVehicleManagementAPI")));
 
             services.AddIdentity<User, IdentityRole<long>>()
+                .AddRoles<IdentityRole<long>>()
                 .AddEntityFrameworkStores<BitzenApplicationContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["jwt:key"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IUser, AspNetUser>();
+
+            services.AddScoped<IVehicleService, VehicleService>();
+            services.AddScoped<IFuelingService, FuelingService>();
 
             services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddScoped<VehicleService>();
@@ -61,8 +86,10 @@ namespace BitzenVehicleManagementAPI
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
+            app.UseAuthorization();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -3,14 +3,16 @@ using System;
 using BitzenVehicleManagementAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BitzenVehicleManagementAPI.Migrations
 {
     [DbContext(typeof(BitzenApplicationContext))]
-    partial class BitzenApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200824024342_Add_Value_Column")]
+    partial class Add_Value_Column
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

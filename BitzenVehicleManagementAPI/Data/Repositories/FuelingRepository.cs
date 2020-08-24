@@ -1,5 +1,9 @@
 ﻿using BitzenVehicleManagementAPI.Models;
 using BitzenVehicleManagementAPI.Models.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace BitzenVehicleManagementAPI.Data.Repositories
 {
@@ -25,9 +29,19 @@ namespace BitzenVehicleManagementAPI.Data.Repositories
             _context.SaveChanges();
         }
 
-        public Fueling Get(long fuelingId)
+        public void Dispose()
+        {
+            _context?.Dispose();
+        }
+
+        public Fueling Find(long fuelingId)
         {
             return _context.Fuelings.Find(fuelingId);
+        }
+
+        public IEnumerable<Fueling> FindAll(Expression<Func<Fueling, bool>> predicate)
+        {
+            return _context.Fuelings.Where(predicate).AsEnumerable();
         }
 
         public Fueling Update(Fueling fueling)
