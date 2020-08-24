@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 
@@ -40,6 +41,22 @@ namespace BitzenVehicleManagementAPI
                 .AddRoles<IdentityRole<long>>()
                 .AddEntityFrameworkStores<BitzenApplicationContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddSwaggerGen(c => {
+
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Bitzen",
+                        Version = "v1",
+                        Description = "BitzenVehicleManagementAPI",
+                        Contact = new OpenApiContact
+                        {
+                            Name = "Fernando Giarola",
+                            Url = new Uri("https://github.com/Fernandogr10")
+                        }
+                    });
+            });
 
             services.AddAuthentication(x =>
             {
@@ -93,6 +110,13 @@ namespace BitzenVehicleManagementAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bitzen V1");
             });
         }
     }
