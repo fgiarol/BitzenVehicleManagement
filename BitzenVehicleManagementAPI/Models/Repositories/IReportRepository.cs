@@ -9,8 +9,8 @@ namespace BitzenVehicleManagementAPI.Models.Repositories
 {
     public interface IReportRepository : IDisposable
     {
-        IEnumerable<ReportDto> LitersByMonth(Expression<Func<ReportDto, bool>> predicate);
-        IEnumerable<ReportDto> ValueByMonth(Expression<Func<ReportDto, bool>> predicate);
+        IEnumerable<ReportDto> LitersByMonth(Expression<Func<Fueling, bool>> predicate);
+        IEnumerable<ReportDto> ValueByMonth(Expression<Func<Fueling, bool>> predicate);
         IEnumerable<ReportDto> MileageByMonth(Expression<Func<ReportDto, bool>> predicate);
         IEnumerable<ReportDto> AvgMonthMileageByLiter(Expression<Func<ReportDto, bool>> predicate);
     }

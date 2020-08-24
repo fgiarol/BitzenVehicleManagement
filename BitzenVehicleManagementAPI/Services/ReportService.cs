@@ -1,4 +1,5 @@
-﻿using BitzenVehicleManagementAPI.Extensions;
+﻿using BitzenVehicleManagementAPI.DTOs;
+using BitzenVehicleManagementAPI.Extensions;
 using BitzenVehicleManagementAPI.Models.Repositories;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,9 @@ namespace BitzenVehicleManagementAPI.Services
             _user = user;
         }
 
-
+        public List<ReportDto> LitersByMonth()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

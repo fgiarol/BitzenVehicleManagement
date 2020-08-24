@@ -28,7 +28,7 @@ namespace BitzenVehicleManagementAPI.Data.Repositories
             _context?.Dispose();
         }
 
-        public IEnumerable<ReportDto> LitersByMonth(Expression<Func<ReportDto, bool>> predicate)
+        public IEnumerable<ReportDto> LitersByMonth(Expression<Func<Fueling, bool>> predicate)
         {
             throw new NotImplementedException();
         }
@@ -38,7 +38,7 @@ namespace BitzenVehicleManagementAPI.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ReportDto> ValueByMonth(Expression<Func<ReportDto, bool>> predicate)
+        public IEnumerable<ReportDto> ValueByMonth(Expression<Func<Fueling, bool>> predicate)
         {
             throw new NotImplementedException();
         }
